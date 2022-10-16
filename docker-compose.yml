@@ -1,0 +1,26 @@
+
+version: '3.9'
+
+volumes:
+  cardano-node-data:
+
+services:
+  cardano-node:
+    image: inputoutput/cardano-node:1.33.0
+    environment:
+      NETWORK: ${CARDANO_NETWORK:-testnet}
+    ports:
+      - 8081:3001
+    volumes:
+      - ./tmp/cardano-node/ipc:/ipc
+      - cardano-node-data:/data
+  
+  ws-cardano-bridge:
+    image: ws-cardano-bridge:latest
+    environment:
+      CARDANO_NODE_SOCKET_PATH: /ipc/node.socket
+      CARDANO_NETWORK: testnet
+    ports:
+      - 9001:9001
+    volumes:
+      - ./tmp/cardano-node/ipc:/ipc
